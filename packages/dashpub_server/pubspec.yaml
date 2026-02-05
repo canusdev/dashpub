@@ -1,6 +1,6 @@
 name: dashpub
 description: The core server implementation for the Dashpub private registry.
-version: 0.0.1
+version: 0.0.2
 repository: https://github.com/canusdev/dashpub
 issue_tracker: https://github.com/canusdev/dashpub/issues
 
@@ -13,7 +13,7 @@ environment:
   sdk: ^3.10.0
 
 dependencies:
-  dashpub_api: ^0.0.1
+  dashpub_api: ^0.0.2
   mongo_dart: ^0.10.6
   shelf: ^1.4.1
   shelf_router: ^1.1.4

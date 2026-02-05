@@ -91,14 +91,14 @@ class PublishCommand extends Command {
     try {
       final bytes = await _createArchive();
       final client = _client ?? DashpubApiClient(url, token: token);
-      await client.publish(bytes);
+      await client.publish(bytes!);
       print('Package published successfully!');
     } catch (e) {
       print('Error: $e');
     }
   }
 
-  Future<List<int>> _createArchive() async {
+  Future<List<int>?> _createArchive() async {
     final encoder = TarFileEncoder();
     final tempDir = Directory.systemTemp.createTempSync('dashpub_publish');
     final tarFile = File(p.join(tempDir.path, 'package.tar'));
@@ -126,6 +126,6 @@ class PublishCommand extends Command {
 
     tempDir.deleteSync(recursive: true);
 
-    return gzipped!;
+    return gzipped;
   }
 }

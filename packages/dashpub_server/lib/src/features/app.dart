@@ -32,6 +32,12 @@ class DashpubApp {
   final String upstream;
   final String? staticAssetsPath;
 
+  /// The secret key used for signing JWT tokens.
+  String jwtSecret = 's3cr3t';
+
+  /// Whether the application has been initialized.
+  bool isInitialized = false;
+
   /// Creates a new instance of [DashpubApp].
   ///
   /// [metaStore] is used for storing metadata (users, package info).
@@ -566,8 +572,9 @@ class DashpubApp {
     return _okWithJson({'data': data.toJson()});
   }
 
+  /// Checks if the application has been initialized (i.e. has at least one user).
   @Route.get('/api/auth/initialized')
-  Future<shelf.Response> isInitialized(shelf.Request req) async {
+  Future<shelf.Response> checkInitialized(shelf.Request req) async {
     final count = await metaStore.countUsers();
     return _okWithJson({'initialized': count > 0});
   }
@@ -627,6 +634,9 @@ class DashpubApp {
     );
   }
 
+  /// Authenticates a user and returns a JWT token.
+  ///
+  /// Supports Google OAuth2 via id_token.
   @Route.post('/api/auth/login')
   Future<shelf.Response> login(shelf.Request req) async {
     final body = json.decode(await req.readAsString());
@@ -654,6 +664,7 @@ class DashpubApp {
     );
   }
 
+  /// Retrieves the currently authenticated user's profile.
   @Route.get('/api/auth/me')
   Future<shelf.Response> me(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -671,6 +682,7 @@ class DashpubApp {
     );
   }
 
+  /// Generates a new API token for the authenticated user.
   @Route.post('/api/auth/token')
   Future<shelf.Response> generateToken(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -723,6 +735,9 @@ class DashpubApp {
     );
   }
 
+  /// Retrieves the global settings.
+  ///
+  /// Publicly accessible to allow loading site title/logo before auth.
   @Route.get('/api/settings')
   Future<shelf.Response> getSettings(shelf.Request req) async {
     final settings = await metaStore.getSettings();
@@ -756,6 +771,7 @@ class DashpubApp {
     return _okWithJson(settings.toJson());
   }
 
+  /// Retrieves a list of teams the user belongs to.
   @Route.get('/api/teams')
   Future<shelf.Response> getTeams(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -771,6 +787,7 @@ class DashpubApp {
     return _okWithJson({'teams': teams.map((t) => t.toJson()).toList()});
   }
 
+  /// Creates a new team.
   @Route.post('/api/teams')
   Future<shelf.Response> createTeam(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -795,6 +812,9 @@ class DashpubApp {
     return _okWithJson(Team(team.id, team.name, team.members).toJson());
   }
 
+  /// Retrieves a list of all users.
+  ///
+  /// Requires admin privileges.
   @Route.get('/api/admin/users')
   Future<shelf.Response> adminGetUsers(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -817,6 +837,9 @@ class DashpubApp {
     });
   }
 
+  /// Creates a new user with admin-defined attributes.
+  ///
+  /// Requires admin privileges.
   @Route.post('/api/admin/users')
   Future<shelf.Response> adminCreateUser(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -856,6 +879,9 @@ class DashpubApp {
     );
   }
 
+  /// Retrieves a list of all teams.
+  ///
+  /// Requires admin privileges.
   @Route.get('/api/admin/teams')
   Future<shelf.Response> adminGetTeams(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -868,6 +894,7 @@ class DashpubApp {
     });
   }
 
+  /// Retrieves details of a specific team.
   @Route.get('/api/teams/<id>')
   Future<shelf.Response> getTeam(shelf.Request req, String id) async {
     final user = await _getAuthenticatedUser(req);
@@ -883,6 +910,10 @@ class DashpubApp {
     return _okWithJson(Team(team.id, team.name, team.members).toJson());
   }
 
+  /// Adds a user to a team.
+  ///
+  /// [id] is the team ID.
+  /// [email] is the email of the user to add.
   @Route.post('/api/teams/<id>/members/<email>')
   Future<shelf.Response> addTeamMember(
     shelf.Request req,
@@ -969,6 +1000,7 @@ class DashpubApp {
     return _okWithJson(updatedTeam.toJson());
   }
 
+  /// Generates a signed upload URL for publishing a new package version.
   @Route.get('/api/packages/versions/new')
   Future<shelf.Response> getUploadUrl(shelf.Request req) async {
     final user = await _getAuthenticatedUser(req);
@@ -1082,6 +1114,9 @@ class DashpubApp {
     return _okWithJson({'success': true});
   }
 
+  /// Retrieves documentation files for a package.
+  ///
+  /// Supports serving `latest` version and handling index.html redirects.
   @Route.get('/doc/<name>/<version>/<path|.*>')
   Future<shelf.Response> getDoc(
     shelf.Request req,
