@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:dashpub/dashpub.dart';
-
 Future<void> main() async {
   // This example demonstrates how to initialize and start the Dashpub server.
   // Note: This requires a running MongoDB instance and a directory for package storage.
