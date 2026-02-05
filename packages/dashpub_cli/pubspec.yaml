@@ -1,6 +1,6 @@
 name: dashpub_cli
 description: Official command-line companion tool for Dashpub. Dashpub is a private registry for Dart packages.
-version: 0.0.1
+version: 0.0.2
 
 repository: https://github.com/canusdev/dashpub
 issue_tracker: https://github.com/canusdev/dashpub/issues
