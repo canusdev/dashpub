@@ -13,7 +13,7 @@
 The backend service for Dashpub, a private Dart package registry. It provides a Pub-compliant API for the Dart `pub` client and a custom API for the Dashpub UI.
 
 ## Docker Deployment
-For deployment instructions, including how to run with Docker/Docker Compose, please refer to the [Main Repository README](https://github.com/canus/dashpub/blob/main/README.md#docker-deployment).
+For deployment instructions, including how to run with Docker/Docker Compose, please refer to the [Main Repository README](https://github.com/canusdev/dashpub/blob/main/README.md#docker-deployment).
 
 ## Features
 
