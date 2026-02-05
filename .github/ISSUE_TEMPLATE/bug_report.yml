@@ -1,0 +1,117 @@
+name: 🐛 Bug Report
+description: Report a bug or unexpected behavior in Dashpub
+title: "[Bug]: "
+labels: [ "bug", "needs triage" ]
+assignees: []
+body:
+- type: markdown
+  attributes:
+    value: |
+      Thanks for taking the time to fill out this bug report! Please provide as much detail as possible.
+
+- type: textarea
+  id: bug-description
+  attributes:
+    label: Bug Description
+    description: A clear and concise description of what the bug is.
+    placeholder: Describe the bug...
+  validations:
+    required: true
+
+- type: textarea
+  id: expected-behavior
+  attributes:
+    label: Expected Behavior
+    description: A clear and concise description of what you expected to happen.
+    placeholder: What should have happened?
+  validations:
+    required: true
+
+- type: textarea
+  id: actual-behavior
+  attributes:
+    label: Actual Behavior
+    description: A clear and concise description of what actually happened.
+    placeholder: What actually happened?
+  validations:
+    required: true
+
+- type: textarea
+  id: steps-to-reproduce
+  attributes:
+    label: Steps to Reproduce
+    description: Steps to reproduce the behavior
+    placeholder: |
+      1. Go to '...'
+      2. Run command '...'
+      3. See error
+  validations:
+    required: true
+
+- type: dropdown
+  id: component
+  attributes:
+    label: Which package is affected?
+    description: Select the package that has the bug
+    options:
+    - dashpub_ui
+    - dashpub_server
+    - dashpub_cli
+    - dashpub_api
+    - Other/Multiple
+  validations:
+    required: true
+
+- type: input
+  id: flutter-dart-version
+  attributes:
+    label: Flutter/Dart Version
+    description: What version of Flutter or Dart are you using?
+    placeholder: "flutter --version / dart --version"
+  validations:
+    required: true
+
+- type: dropdown
+  id: platform
+  attributes:
+    label: Platform
+    description: Which platform(s) does this issue occur on?
+    multiple: true
+    options:
+    - Android
+    - iOS
+    - Web
+    - Windows
+    - macOS
+    - Linux
+  validations:
+    required: true
+
+- type: textarea
+  id: logs
+  attributes:
+    label: Logs / Output
+    description: Please provide relevant logs or terminal output
+    render: shell
+    placeholder: |
+      Copy/paste your logs here...
+  validations:
+    required: false
+
+- type: textarea
+  id: additional-context
+  attributes:
+    label: Additional Context
+    description: Add any other context about the problem here, including screenshots, error logs, etc.
+    placeholder: Any additional information that might help...
+
+- type: checkboxes
+  id: checklist
+  attributes:
+    label: Checklist
+    description: Please confirm the following
+    options:
+    - label: I have searched existing issues and this is not a duplicate
+      required: true
+    - label: I have provided sufficient detail to reproduce the issue
+      required: true

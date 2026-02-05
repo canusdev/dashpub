@@ -1,0 +1,21 @@
+name: dashpub_workspace
+
+packages:
+  - packages/**
+
+scripts:
+  analyze:
+    run: melos exec -- dart analyze .
+    description: Run `dart analyze` in all packages.
+
+  test:
+    run: melos exec --dir-exists=test -- dart test
+    description: Run `dart test` for selected packages.
+
+  format:
+    run: dart format .
+    description: Run `dart format` for all packages.
+    
+  doc:
+    run: melos exec -- dart doc .
+    description: Generate documentation for all packages.

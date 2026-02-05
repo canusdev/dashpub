@@ -1,0 +1,41 @@
+name: dashpub
+description: The core server implementation for the Dashpub private registry.
+version: 0.0.1
+publish_to: none
+repository: https://github.com/canusdev/dashpub
+issue_tracker: https://github.com/canusdev/dashpub/issues
+
+topics:
+  - server
+  - pub
+  - dashpub
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  dashpub_api:
+    path: ../dashpub_api
+  mongo_dart: ^0.10.6
+  shelf: ^1.4.1
+  shelf_router: ^1.1.4
+  shelf_static: ^1.1.2
+  yaml: ^3.1.2
+  json_annotation: ^4.10.0
+  intl: ^0.20.2
+  path: ^1.8.3
+  minio: ^3.5.0
+  dart_jsonwebtoken: ^3.3.1
+  crypto: ^3.0.7
+  archive: ^4.0.2
+  shelf_multipart: 2.0.1
+  collection: ^1.18.0
+  pub_semver: ^2.1.4
+  mime: ^2.0.0
+
+dev_dependencies:
+  build_runner: ^2.4.6
+  json_serializable: ^6.7.1
+  shelf_router_generator: ^1.0.6
+  lints: ^6.1.0
+  test: ^1.24.0

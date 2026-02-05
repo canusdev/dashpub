@@ -1,0 +1,48 @@
+name: dashpub_ui
+description: Flutter-based web dashboard for Dashpub.
+publish_to: 'none'
+repository: https://github.com/canusdev/dashpub
+issue_tracker: https://github.com/canusdev/dashpub/issues
+
+topics:
+  - ui
+  - flutter
+  - pub
+  - dashpub
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
+  dashpub_api:
+    path: ../dashpub_api
+  go_router: ^17.1.0
+  http: ^1.1.0
+  intl: ^0.20.2
+  google_fonts: ^8.0.1
+  shared_preferences: ^2.5.4
+  shadcn_flutter: ^0.0.47
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.8
+  highlight: ^0.7.0
+  flutter_highlight: ^0.7.0
+  markdown: ^7.3.0
+  flutter_markdown_plus: ^1.0.7
+  timeago: ^3.7.1
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  mocktail: ^1.0.0
+  bloc_test: ^10.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/dashpub.png

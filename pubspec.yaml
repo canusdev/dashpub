@@ -1,0 +1,10 @@
+name: dashpub_workspace
+description: A workspace for dashpub project.
+publish_to: none
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.10.0 <4.0.0'
+
+dev_dependencies:
+  melos: ^7.4.0
