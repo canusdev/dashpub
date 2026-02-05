@@ -1,6 +1,6 @@
 name: dashpub_cli
 description: Official command-line companion tool for Dashpub.
-version: 1.0.0
+version: 0.0.1
 
 repository: https://github.com/canusdev/dashpub
 issue_tracker: https://github.com/canusdev/dashpub/issues
@@ -23,7 +23,7 @@ dependencies:
   path: ^1.8.3
   archive: ^3.3.7
   yaml: ^3.1.2
-  dashpub_api: ^1.0.0
+  dashpub_api: ^0.0.1
   glob: ^2.1.3
 
 dev_dependencies:
