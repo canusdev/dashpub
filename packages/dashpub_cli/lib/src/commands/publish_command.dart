@@ -8,6 +8,7 @@ import '../config.dart';
 
 import '../ignore.dart';
 
+/// Command to publish a package to the Dashpub registry.
 class PublishCommand extends Command {
   @override
   final name = 'publish';

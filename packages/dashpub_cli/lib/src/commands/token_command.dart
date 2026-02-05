@@ -2,6 +2,7 @@ import 'package:args/command_runner.dart';
 import 'package:dashpub_api/dashpub_api.dart';
 import '../config.dart';
 
+/// Command to manage API tokens.
 class TokenCommand extends Command {
   @override
   final name = 'token';

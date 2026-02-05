@@ -9,6 +9,7 @@ final userCollection = 'users';
 final teamCollection = 'teams';
 final settingsCollection = 'settings';
 
+/// Implementation of [MetaStore] using MongoDB.
 class MongoStore extends MetaStore {
   Db db;
 

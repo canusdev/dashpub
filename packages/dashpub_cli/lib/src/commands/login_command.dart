@@ -3,6 +3,7 @@ import 'package:args/command_runner.dart';
 import 'package:dashpub_api/dashpub_api.dart';
 import '../config.dart';
 
+/// Command to login to the Dashpub registry.
 class LoginCommand extends Command {
   @override
   final name = 'login';

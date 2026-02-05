@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package_store.dart';
 
+/// Implementation of [PackageStore] using the local file system.
 class FileStore extends PackageStore {
   String baseDir;
   String Function(String name, String version)? getFilePath;

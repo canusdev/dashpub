@@ -4,6 +4,7 @@ part 'package.g.dart';
 
 DateTime _identity(DateTime x) => x;
 
+/// Represents a specific version of a package.
 @JsonSerializable(includeIfNull: false)
 class PackageVersion {
   final String version;
@@ -34,8 +35,10 @@ class PackageVersion {
   Map<String, dynamic> toJson() => _$PackageVersionToJson(this);
 }
 
+/// Types of permissions a user can have on a package.
 enum PermissionType { read, write, admin }
 
+/// Represents a permission grant for a package.
 @JsonSerializable()
 class PackagePermission {
   final String uploaderId;
@@ -49,6 +52,7 @@ class PackagePermission {
   Map<String, dynamic> toJson() => _$PackagePermissionToJson(this);
 }
 
+/// Represents a Dart package.
 @JsonSerializable()
 class Package {
   final String name;
@@ -81,6 +85,7 @@ class Package {
   Map<String, dynamic> toJson() => _$PackageToJson(this);
 }
 
+/// Represents a paginated list of packages.
 @JsonSerializable()
 class QueryResult {
   final int count;

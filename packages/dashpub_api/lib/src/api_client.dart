@@ -2,15 +2,22 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../dashpub_api.dart'; // For DTOs
 
+/// Client for interacting with the Dashpub API.
 class DashpubApiClient {
   final String baseUrl;
   final http.Client _client;
   String? _token;
 
+  /// Creates a [DashpubApiClient].
+  ///
+  /// [baseUrl] is the root URL of the Dashpub server.
+  /// [client] is an optional http client.
+  /// [token] is an optional initial authentication token.
   DashpubApiClient(this.baseUrl, {http.Client? client, String? token})
     : _client = client ?? http.Client(),
       _token = token;
 
+  /// Sets the authentication token.
   void setToken(String? token) {
     _token = token;
   }
@@ -20,6 +27,9 @@ class DashpubApiClient {
     if (_token != null) 'Authorization': 'Bearer $_token',
   };
 
+  /// Logs in a user.
+  ///
+  /// Returns an [AuthResponse] containing the token and user details.
   Future<AuthResponse> login(String email, String password) async {
     final response = await _client.post(
       Uri.parse('$baseUrl/api/auth/login'),
@@ -33,6 +43,9 @@ class DashpubApiClient {
     }
   }
 
+  /// Registers a new user.
+  ///
+  /// Returns an [AuthResponse] containing the token and user details.
   Future<AuthResponse> register(
     String email,
     String password,
@@ -52,6 +65,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Retrieves the currently authenticated user.
   Future<User> getMe() async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/auth/me'),
@@ -64,6 +78,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Updates the current user's profile.
   Future<User> updateMe({String? name, String? password}) async {
     final response = await _client.patch(
       Uri.parse('$baseUrl/api/auth/me'),
@@ -82,6 +97,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Generates a new API token for the user.
   Future<String> generateToken() async {
     final response = await _client.post(
       Uri.parse('$baseUrl/api/auth/token'),
@@ -94,6 +110,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Retrieves a list of packages with optional filtering and pagination.
   Future<ListApi> getPackages({
     int size = 10,
     int page = 0,
@@ -118,6 +135,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Retrieves detailed information about a package.
   Future<WebapiDetailView> getPackageDetail(
     String name, {
     String version = 'latest',
@@ -135,6 +153,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Retrieves the global server settings.
   Future<GlobalSettings> getSettings() async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/settings'),
@@ -147,6 +166,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Updates the global server settings.
   Future<void> updateSettings(GlobalSettings settings) async {
     final response = await _client.patch(
       Uri.parse('$baseUrl/api/settings'),
@@ -158,6 +178,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Checks if the system is initialized (has at least one user).
   Future<bool> isInitialized() async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/auth/initialized'),
@@ -170,6 +191,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Retrieves a list of teams the user belongs to.
   Future<List<Team>> getTeams() async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/teams'),
@@ -185,6 +207,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Creates a new team.
   Future<Team> createTeam(String name) async {
     final response = await _client.post(
       Uri.parse('$baseUrl/api/teams'),
@@ -200,6 +223,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Admin: Retrieves all users.
   Future<List<User>> adminGetUsers() async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/admin/users'),
@@ -217,6 +241,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Admin: Retrieves all teams.
   Future<List<Team>> adminGetTeams() async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/admin/teams'),
@@ -234,7 +259,7 @@ class DashpubApiClient {
     }
   }
 
-  // CLI specific: publish
+  /// Publishes a new package version.
   Future<void> publish(List<int> bytes) async {
     final request = http.MultipartRequest(
       'POST',
@@ -258,7 +283,7 @@ class DashpubApiClient {
     }
   }
 
-  // Uploader Management
+  /// Adds an uploader to a package.
   Future<void> addUploader(String packageName, String email) async {
     final response = await _client.post(
       Uri.parse('$baseUrl/api/packages/$packageName/uploaders'),
@@ -272,6 +297,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Removes an uploader from a package.
   Future<void> removeUploader(String packageName, String email) async {
     final response = await _client.delete(
       Uri.parse('$baseUrl/api/packages/$packageName/uploaders/$email'),
@@ -285,6 +311,7 @@ class DashpubApiClient {
   }
 
   // Admin User Management
+  /// Admin: Creates a new user.
   Future<User> adminCreateUser({
     required String email,
     required String password,
@@ -310,6 +337,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Admin: Updates a user.
   Future<User> adminUpdateUser(String userId, {bool? isAdmin}) async {
     final response = await _client.patch(
       Uri.parse('$baseUrl/api/admin/users/$userId'),
@@ -326,6 +354,7 @@ class DashpubApiClient {
   }
 
   // Team Management
+  /// Retrieves a team by its ID.
   Future<Team> getTeam(String teamId) async {
     final response = await _client.get(
       Uri.parse('$baseUrl/api/teams/$teamId'),
@@ -340,6 +369,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Adds a member to a team.
   Future<Team> addTeamMember(String teamId, String email) async {
     final response = await _client.post(
       Uri.parse('$baseUrl/api/teams/$teamId/members/$email'),
@@ -354,6 +384,7 @@ class DashpubApiClient {
     }
   }
 
+  /// Removes a member from a team.
   Future<Team> removeTeamMember(String teamId, String userId) async {
     final response = await _client.delete(
       Uri.parse('$baseUrl/api/teams/$teamId/members/$userId'),

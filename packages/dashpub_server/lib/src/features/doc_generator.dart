@@ -3,11 +3,18 @@ import 'package:archive/archive_io.dart';
 import 'package:path/path.dart' as path;
 import '../data/package_store.dart';
 
+/// Service for generating API documentation for Dart packages.
+///
+/// This service downloads the package tarball, extracts it, runs `dart doc`,
+/// and uploads the generated documentation to the package store.
 class DocGenerator {
   final PackageStore packageStore;
 
   DocGenerator(this.packageStore);
 
+  /// Generates documentation for the specified [name] and [version].
+  ///
+  /// This process is asynchronous and involves significant I/O operations.
   Future<void> generate(String name, String version) async {
     final tempDir = await Directory.systemTemp.createTemp('dashpub_doc_');
     try {

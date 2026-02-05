@@ -2,6 +2,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'user.g.dart';
 
+/// Represents a user in the Dashpub system.
 @JsonSerializable()
 class User {
   final String id;
@@ -49,6 +50,7 @@ class User {
   }
 }
 
+/// Represents a team of users.
 @JsonSerializable()
 class Team {
   final String id;
@@ -61,6 +63,7 @@ class Team {
   Map<String, dynamic> toJson() => _$TeamToJson(this);
 }
 
+/// Global configuration settings for the Dashpub instance.
 @JsonSerializable()
 class GlobalSettings {
   final bool publicAccess;

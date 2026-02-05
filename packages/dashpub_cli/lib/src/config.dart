@@ -2,10 +2,14 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'dart:convert';
 
+/// Configuration manager for Dashpub CLI.
+///
+/// Handles saving and loading the authentication token from `~/.dashpub`.
 class DashpubConfig {
   static const _fileName = '.dashpub';
   final Directory? _homeDir;
 
+  /// Creates a configuration manager.
   DashpubConfig({Directory? homeDir}) : _homeDir = homeDir;
 
   String get _configPath {
@@ -17,11 +21,13 @@ class DashpubConfig {
     return p.join(home!, _fileName);
   }
 
+  /// Saves the authentication token to the config file.
   Future<void> saveToken(String token) async {
     final file = File(_configPath);
     await file.writeAsString(jsonEncode({'token': token}));
   }
 
+  /// Retrieves the stored authentication token.
   Future<String?> getToken() async {
     final file = File(_configPath);
     if (!await file.exists()) return null;
@@ -34,6 +40,7 @@ class DashpubConfig {
     }
   }
 
+  /// Deletes the stored authentication token (logout).
   Future<void> deleteToken() async {
     final file = File(_configPath);
     if (await file.exists()) {
