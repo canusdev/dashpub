@@ -54,7 +54,7 @@ class DashpubApp extends StatelessWidget {
                   settingsState.error != null) {
                 return ShadcnApp(
                   theme: ThemeData(
-                    colorScheme: ColorSchemes.darkYellow,
+                    colorScheme: ColorSchemes.darkZinc.yellow,
                     radius: 0.9,
                     surfaceOpacity: 0.5,
                     surfaceBlur: 19.0,
@@ -95,7 +95,7 @@ class DashpubApp extends StatelessWidget {
               if (settingsState.isLoading || authState is AuthInitial) {
                 return ShadcnApp(
                   theme: ThemeData(
-                    colorScheme: ColorSchemes.darkYellow,
+                    colorScheme: ColorSchemes.darkZinc.yellow,
                     radius: 0.9,
                     surfaceOpacity: 0.5,
                     surfaceBlur: 19.0,
@@ -109,7 +109,7 @@ class DashpubApp extends StatelessWidget {
               return ShadcnApp.router(
                 title: settingsState.settings?.siteTitle ?? 'Dashpub',
                 theme: ThemeData(
-                  colorScheme: ColorSchemes.darkYellow.copyWith(),
+                  colorScheme: ColorSchemes.darkZinc.yellow.copyWith(),
                   radius: 0.9,
                   surfaceOpacity: 0.5,
                   surfaceBlur: 19.0,
@@ -149,7 +149,11 @@ final _router = GoRouter(
       return '/';
     }
 
-    if (authState is Unauthenticated && !isLoggingIn) {
+    final isPublicRoute = state.uri.path == '/' ||
+        state.uri.path.startsWith('/package/') ||
+        isLoggingIn;
+
+    if (authState is Unauthenticated && !isPublicRoute) {
       return '/login';
     }
 
@@ -215,7 +219,7 @@ final _router = GoRouter(
     ),
   ],
   errorBuilder: (context, state) => ShadcnApp(
-    theme: ThemeData(colorScheme: ColorSchemes.darkYellow, radius: 0.9),
+    theme: ThemeData(colorScheme: ColorSchemes.darkZinc.yellow, radius: 0.9),
     home: Scaffold(
       child: Center(
         child: Column(
@@ -316,20 +320,21 @@ class _Sidebar extends StatelessWidget {
             },
           ),
           NavigationSidebar(
-            index: (uri == '/' || uri.startsWith('/pkg'))
-                ? 0
+            selectedKey: (uri == '/' || uri.startsWith('/pkg'))
+                ? const ValueKey('explore')
                 : (uri == '/teams' || uri.startsWith('/teams/'))
-                ? 1
+                ? const ValueKey('teams')
                 : (uri == '/settings')
-                ? 2
-                : -1,
-            onSelected: (index) {
-              if (index == 0) context.go('/');
-              if (index == 1) context.go('/teams');
-              if (index == 2) context.go('/settings');
+                ? const ValueKey('settings')
+                : null,
+            onSelected: (key) {
+              if (key == const ValueKey('explore')) context.go('/');
+              if (key == const ValueKey('teams')) context.go('/teams');
+              if (key == const ValueKey('settings')) context.go('/settings');
             },
             children: const [
               NavigationItem(
+                key: ValueKey('explore'),
                 child: Row(
                   children: [
                     Icon(BootstrapIcons.search, size: 18),
@@ -339,6 +344,7 @@ class _Sidebar extends StatelessWidget {
                 ),
               ),
               NavigationItem(
+                key: ValueKey('teams'),
                 child: Row(
                   children: [
                     Icon(BootstrapIcons.people, size: 18),
@@ -348,6 +354,7 @@ class _Sidebar extends StatelessWidget {
                 ),
               ),
               NavigationItem(
+                key: ValueKey('settings'),
                 child: Row(
                   children: [
                     Icon(BootstrapIcons.gear, size: 18),
@@ -378,20 +385,21 @@ class _Sidebar extends StatelessWidget {
                     ),
                     const Gap(8),
                     NavigationSidebar(
-                      index: uri.startsWith('/admin/users')
-                          ? 0
+                      selectedKey: uri.startsWith('/admin/users')
+                          ? const ValueKey('admin_users')
                           : uri.startsWith('/admin/teams')
-                          ? 1
+                          ? const ValueKey('admin_teams')
                           : uri.startsWith('/admin/packages')
-                          ? 2
-                          : -1,
-                      onSelected: (index) {
-                        if (index == 0) context.go('/admin/users');
-                        if (index == 1) context.go('/admin/teams');
-                        if (index == 2) context.go('/admin/packages');
+                          ? const ValueKey('admin_packages')
+                          : null,
+                      onSelected: (key) {
+                        if (key == const ValueKey('admin_users')) context.go('/admin/users');
+                        if (key == const ValueKey('admin_teams')) context.go('/admin/teams');
+                        if (key == const ValueKey('admin_packages')) context.go('/admin/packages');
                       },
                       children: const [
                         NavigationItem(
+                          key: ValueKey('admin_users'),
                           child: Row(
                             children: [
                               Icon(BootstrapIcons.peopleFill, size: 18),
@@ -401,6 +409,7 @@ class _Sidebar extends StatelessWidget {
                           ),
                         ),
                         NavigationItem(
+                          key: ValueKey('admin_teams'),
                           child: Row(
                             children: [
                               Icon(BootstrapIcons.microsoftTeams, size: 18),
@@ -410,6 +419,7 @@ class _Sidebar extends StatelessWidget {
                           ),
                         ),
                         NavigationItem(
+                          key: ValueKey('admin_packages'),
                           child: Row(
                             children: [
                               Icon(BootstrapIcons.boxSeamFill, size: 18),

@@ -262,8 +262,17 @@ class DashpubApp {
     }
 
     final user = await _getAuthenticatedUser(req);
+    final settings = await metaStore.getSettings();
+
+    if (!settings.publicAccess && user == null) {
+      return _error('Unauthorized', 401);
+    }
+
     if (!_checkPermission(user, package, PermissionType.read)) {
-      return _error('Unauthorized', 403);
+      return _error(
+        user == null ? 'Unauthorized' : 'Forbidden',
+        user == null ? 401 : 403,
+      );
     }
 
     package.versions.sort((a, b) {
@@ -312,8 +321,17 @@ class DashpubApp {
     }
 
     final user = await _getAuthenticatedUser(req);
+    final settings = await metaStore.getSettings();
+
+    if (!settings.publicAccess && user == null) {
+      return _error('Unauthorized', 401);
+    }
+
     if (!_checkPermission(user, package, PermissionType.read)) {
-      return _error('Unauthorized', 403);
+      return _error(
+        user == null ? 'Unauthorized' : 'Forbidden',
+        user == null ? 401 : 403,
+      );
     }
 
     var packageVersion = package.versions.firstWhereOrNull(
@@ -351,8 +369,17 @@ class DashpubApp {
     }
 
     final user = await _getAuthenticatedUser(req);
+    final settings = await metaStore.getSettings();
+
+    if (!settings.publicAccess && user == null) {
+      return _error('Unauthorized', 401);
+    }
+
     if (!_checkPermission(user, package, PermissionType.read)) {
-      return _error('Unauthorized', 403);
+      return _error(
+        user == null ? 'Unauthorized' : 'Forbidden',
+        user == null ? 401 : 403,
+      );
     }
 
     metaStore.increaseDownloads(name, version);
@@ -445,8 +472,12 @@ class DashpubApp {
     if (!settings.publicAccess && user == null) {
       return _error('Unauthorized', 401);
     }
+
     if (!_checkPermission(user, package, PermissionType.read)) {
-      return _error('Unauthorized', 403);
+      return _error(
+        user == null ? 'Unauthorized' : 'Forbidden',
+        user == null ? 401 : 403,
+      );
     }
 
     PackageVersion? packageVersion;

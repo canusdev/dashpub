@@ -1,4 +1,10 @@
 # Changelog
+## 0.0.3
+
+- Added support for direct login using an existing API token via the `--token` / `-t` option in the `login` command.
+- Standardized command inputs by stripping trailing slashes from the registry URL option in all commands (`login`, `publish`, `token`).
+- Added unit tests for token-based authentication (success and failure scenarios).
+
 ## 0.0.2
 
 - Added comprehensive documentation and library exports.

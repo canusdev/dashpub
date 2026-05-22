@@ -79,10 +79,105 @@ void main() {
       final pkg = await metaStore.queryPackage('test_pkg');
       expect(pkg!.download, 1);
     });
+
+    test('getVersions returns 401 when publicAccess is disabled and unauthenticated', () async {
+      await metaStore.updateSettings(GlobalSettings(false, true));
+      final version = PackageVersion(
+        '1.0.0',
+        {'name': 'test_pkg'},
+        null,
+        null,
+        null,
+        null,
+        null,
+        DateTime.now(),
+      );
+      await metaStore.addVersion('test_pkg', version);
+
+      final request = shelf.Request(
+        'GET',
+        Uri.parse('http://localhost/api/packages/test_pkg'),
+      );
+      final response = await app.router(request);
+
+      expect(response.statusCode, 401);
+    });
+
+    test('getVersion returns package version details', () async {
+      final version = PackageVersion(
+        '1.0.0',
+        {'name': 'test_pkg'},
+        null,
+        null,
+        null,
+        null,
+        null,
+        DateTime.now(),
+      );
+      await metaStore.addVersion('test_pkg', version);
+
+      final request = shelf.Request(
+        'GET',
+        Uri.parse('http://localhost/api/packages/test_pkg/versions/1.0.0'),
+      );
+      final response = await app.router(request);
+
+      expect(response.statusCode, 200);
+      final body = jsonDecode(await response.readAsString());
+      expect(body['version'], '1.0.0');
+    });
+
+    test('getVersion returns 401 when publicAccess is disabled and unauthenticated', () async {
+      await metaStore.updateSettings(GlobalSettings(false, true));
+      final version = PackageVersion(
+        '1.0.0',
+        {'name': 'test_pkg'},
+        null,
+        null,
+        null,
+        null,
+        null,
+        DateTime.now(),
+      );
+      await metaStore.addVersion('test_pkg', version);
+
+      final request = shelf.Request(
+        'GET',
+        Uri.parse('http://localhost/api/packages/test_pkg/versions/1.0.0'),
+      );
+      final response = await app.router(request);
+
+      expect(response.statusCode, 401);
+    });
+
+    test('download returns 401 when publicAccess is disabled and unauthenticated', () async {
+      await metaStore.updateSettings(GlobalSettings(false, true));
+      final version = PackageVersion(
+        '1.0.0',
+        {'name': 'test_pkg'},
+        null,
+        null,
+        null,
+        null,
+        null,
+        DateTime.now(),
+      );
+      await metaStore.addVersion('test_pkg', version);
+      await packageStore.upload('test_pkg', '1.0.0', [1, 2, 3]);
+
+      final request = shelf.Request(
+        'GET',
+        Uri.parse('http://localhost/packages/test_pkg/versions/1.0.0.tar.gz'),
+      );
+      final response = await app.router(request);
+
+      expect(response.statusCode, 401);
+    });
   });
 
   group('WebAPI Routes', () {
     test('getPackages returns list', () async {
+      await metaStore.updateSettings(GlobalSettings(true, true));
       final version = PackageVersion(
         '1.0.0',
         {'name': 'test_pkg', 'description': 'desc'},
@@ -105,6 +200,78 @@ void main() {
       final body = jsonDecode(await response.readAsString());
       expect(body['data']['count'], 1);
       expect(body['data']['packages'][0]['name'], 'test_pkg');
+    });
+
+    group('getPackageDetail', () {
+      test('returns detail for public package when unauthenticated', () async {
+        final version = PackageVersion(
+          '1.0.0',
+          {'name': 'test_pkg', 'description': 'desc'},
+          null,
+          null,
+          'readme info',
+          null,
+          null,
+          DateTime.now(),
+        );
+        await metaStore.addVersion('test_pkg', version, private: false);
+
+        final request = shelf.Request(
+          'GET',
+          Uri.parse('http://localhost/webapi/package/test_pkg/latest'),
+        );
+        final response = await app.router(request);
+
+        expect(response.statusCode, 200);
+        final body = jsonDecode(await response.readAsString());
+        expect(body['data']['name'], 'test_pkg');
+        expect(body['data']['readme'], 'readme info');
+      });
+
+      test('returns 401 for private package when unauthenticated', () async {
+        final version = PackageVersion(
+          '1.0.0',
+          {'name': 'private_pkg', 'description': 'desc'},
+          null,
+          null,
+          'readme info',
+          null,
+          null,
+          DateTime.now(),
+        );
+        await metaStore.addVersion('private_pkg', version, private: true);
+
+        final request = shelf.Request(
+          'GET',
+          Uri.parse('http://localhost/webapi/package/private_pkg/latest'),
+        );
+        final response = await app.router(request);
+
+        expect(response.statusCode, 401);
+      });
+
+      test('returns 401 for public package when publicAccess is disabled and unauthenticated', () async {
+        await metaStore.updateSettings(GlobalSettings(false, true));
+        final version = PackageVersion(
+          '1.0.0',
+          {'name': 'test_pkg', 'description': 'desc'},
+          null,
+          null,
+          'readme info',
+          null,
+          null,
+          DateTime.now(),
+        );
+        await metaStore.addVersion('test_pkg', version, private: false);
+
+        final request = shelf.Request(
+          'GET',
+          Uri.parse('http://localhost/webapi/package/test_pkg/latest'),
+        );
+        final response = await app.router(request);
+
+        expect(response.statusCode, 401);
+      });
     });
   });
 }

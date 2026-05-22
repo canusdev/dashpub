@@ -8,7 +8,7 @@ class MockMetaStore implements MetaStore {
   final packages = <String, Package>{};
   final _users = <String, User>{};
   final _teams = <String, Team>{};
-  GlobalSettings _settings = GlobalSettings(false, true);
+  GlobalSettings _settings = GlobalSettings(true, true);
 
   @override
   Future<Package?> queryPackage(String name) async => packages[name];

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:args/command_runner.dart';
 import 'package:dashpub_api/dashpub_api.dart';
 import 'package:dashpub_cli/src/commands/login_command.dart';
+import 'package:dashpub_cli/src/config.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
 
@@ -17,11 +18,14 @@ void main() {
     late CommandRunner<void> runner;
     late Directory tempDir;
 
+    late DashpubConfig config;
+
     setUp(() {
       mockClient = MockDashpubApiClient();
-      runner = CommandRunner('dashpub', 'Test runner');
-      runner.addCommand(LoginCommand(client: mockClient));
       tempDir = Directory.systemTemp.createTempSync('dashpub_test');
+      config = DashpubConfig(homeDir: tempDir);
+      runner = CommandRunner('dashpub', 'Test runner');
+      runner.addCommand(LoginCommand(client: mockClient, config: config));
     });
 
     tearDown(() {
@@ -50,6 +54,36 @@ void main() {
       // and that the mock client can be set up correctly with the real data structures.
 
       expect(runner.commands['login'], isNotNull);
+    });
+
+    test('login with token success saves token', () async {
+      final user = User(
+        '1',
+        false,
+        'test@example.com',
+        'Test User',
+        'hash',
+        [],
+        'token',
+      );
+
+      when(() => mockClient.getMe()).thenAnswer((_) async => user);
+
+      await runner.run(['login', '--token', 'some_token']);
+
+      verify(() => mockClient.getMe()).called(1);
+      final savedToken = await config.getToken();
+      expect(savedToken, equals('some_token'));
+    });
+
+    test('login with token failure does not save token', () async {
+      when(() => mockClient.getMe()).thenThrow(Exception('Unauthorized'));
+
+      await runner.run(['login', '--token', 'invalid_token']);
+
+      verify(() => mockClient.getMe()).called(1);
+      final savedToken = await config.getToken();
+      expect(savedToken, isNull);
     });
   });
 }

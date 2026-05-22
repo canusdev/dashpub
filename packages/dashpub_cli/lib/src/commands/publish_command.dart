@@ -28,7 +28,10 @@ class PublishCommand extends Command {
 
   @override
   Future<void> run() async {
-    final url = argResults!['url'] as String;
+    var url = argResults!['url'] as String;
+    if (url.endsWith('/')) {
+      url = url.substring(0, url.length - 1);
+    }
     final config = DashpubConfig();
     final token = await config.getToken();
 
